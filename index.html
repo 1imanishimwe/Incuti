@@ -239,6 +239,62 @@
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Incuti Ai</h2>
                 </div>
 
+                <div class="relative inline-block text-left">
+                    <button id="assistantDropdown" class="flex items-center space-x-2 px-4 py-2 bg-white text-gray-900 dark:bg-gray-800 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <span>Select Assistant</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    
+                    
+                
+                    <div id="assistantMenu" class="hidden absolute left-0 mt-2 w-72 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
+                        <div class="py-1" role="menu">
+                            <button class="assistant-option flex items-center space-x-3 w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-code text-blue-500"></i>
+                                <div>
+                                    <div class="font-medium text-gray-900 dark:text-white">Incuti Coding Assistant</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Get help with coding and development</div>
+                                </div>
+                            </button>
+                
+                            <button class="assistant-option flex items-center space-x-3 w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-chart-line text-green-500"></i>
+                                <div>
+                                    <div class="font-medium text-gray-900 dark:text-white">Incuti Financial Assistant</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Financial analysis and advice</div>
+                                </div>
+                            </button>
+                
+                            <button class="assistant-option flex items-center space-x-3 w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-comments text-purple-500"></i>
+                                <div>
+                                    <div class="font-medium text-gray-900 dark:text-white">Conversational Incuti</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">General conversation and assistance</div>
+                                </div>
+                            </button>
+                
+                            <button class="assistant-option flex items-center space-x-3 w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-image text-orange-500"></i>
+                                <div>
+                                    <div class="font-medium text-gray-900 dark:text-white">Incuti Image Generator</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Create and edit images</div>
+                                </div>
+                            </button>
+                
+                            <button class="assistant-option flex items-center space-x-3 w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-language text-red-500"></i>
+                                <div>
+                                    <div class="font-medium text-gray-900 dark:text-white">Incuti Translator</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Translate between languages</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+
                     <div class="flex space-x-2">
                                         <div class="relative inline-block text-left">
                                             <button id="userDropdown" class="p-2 rounded-lg bg-gray-300 dark:bg-gray-700 hover:scale-110 transition-transform">
@@ -438,6 +494,48 @@
                 userDropdownMenu.classList.add('hidden');
             }
         });
+
+
+
+        // manager assistant dropdowns
+         // Add this to your existing JavaScript
+const assistantDropdown = document.getElementById('assistantDropdown');
+const assistantMenu = document.getElementById('assistantMenu');
+const assistantOptions = document.querySelectorAll('.assistant-option');
+
+// Toggle dropdown
+assistantDropdown.addEventListener('click', (e) => {
+    e.stopPropagation();
+    assistantMenu.classList.toggle('hidden');
+});
+
+// Handle option selection
+assistantOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        const selectedAssistant = option.querySelector('.font-medium').textContent;
+        // Update the current assistant
+        assistantDropdown.querySelector('span').textContent = selectedAssistant;
+        assistantMenu.classList.add('hidden');
+        
+        // You can add additional logic here to switch between assistants
+        console.log(`Switched to ${selectedAssistant}`);
+    });
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (!assistantDropdown.contains(e.target)) {
+        assistantMenu.classList.add('hidden');
+    }
+});
+
+// Add keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !assistantMenu.classList.contains('hidden')) {
+        assistantMenu.classList.add('hidden');
+    }
+});
+
     </script>
 </body>
 </html>

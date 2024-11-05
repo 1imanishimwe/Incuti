@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incuti Ai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1a202c',
+                        chatgpt: {
+                            light: '#f7f7f8',
+                            dark: '#444654'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+   
+    <style>
+        .theme-transition {
+            transition: all 0.3s ease;
+        }
+        .message-container {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #4a5568 #2d3748;
+        }
+        .message-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .message-container::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        .message-container::-webkit-scrollbar-thumb {
+            background-color: #4a5568;
+            border-radius: 4px;
+        }
+        .code-block {
+            background: #1e1e1e;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            font-family: monospace;
+        }
+        body {
+            transition: margin-left 0.3s ease;
+        }
+        body.sidebar-open {
+            margin-left: 1rem;
+        }
+        main {
+            transition: all 0.3s ease;
+        }
+        .w-full {
+            width: 100%;
+        }
+
+        #sidebar {
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 1024px) {
+            #sidebar {
+                position: fixed;
+                left: -256px;
+                z-index: 50;
+            }
+
+            #sidebar.hidden {
+                transform: translateX(-100%);
+            }
+
+            #sidebar:not(.hidden) {
+                transform: translateX(100%);
+            }
+
+            main {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            #sidebar {
+                position: fixed;
+                left: 0;
+            }
+
+            #sidebar.hidden {
+                transform: translateX(-100%);
+            }
+
+            main {
+                transition: margin-left 0.3s ease;
+            }
+
+            main.ml-64 {
+                margin-left: 16rem;
+            }
+
+            main.ml-0 {
+                margin-left: 0;
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .message-container {
+                padding: 1rem;
+            }
+           
+            .message-container > div {
+                width: 100% !important;
+            }
+           
+            header {
+                padding: 0.75rem;
+            }
+           
+            header h2 {
+                font-size: 1.25rem;
+            }
+           
+            #inputContainer .max-w-screen-xl {
+                padding: 0.75rem;
+            }
+           
+            input[type="text"] {
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .message-container > div > div {
+                max-width: 90% !important;
+            }
+           
+            .code-block {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+                overflow-x: auto;
+            }
+           
+            #inputContainer .max-w-screen-xl {
+                padding: 0.5rem;
+            }
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="theme-transition bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="flex">
+        <aside id="sidebar" class="theme-transition w-64 bg-gray-200 dark:bg-gray-800 h-screen flex flex-col p-4 space-y-4">
+            <!-- Sidebar content -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2 bg-black dark:bg-transparent w-full">
+                 <img src="Image/incuti.png" alt="">
+                </div>
+            </div>
+
+            <nav class="space-y-2 overflow-y-auto flex-grow" style="max-height: calc(100vh - 200px); scrollbar-width: thin; scrollbar-color: #4a5568 #2d3748;">
+                <div class="text-sm font-semibold text-gray-600 dark:text-gray-400 px-2">Recent Chats</div>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        🤖 Machine Learning
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        🔒 Cybersecurity
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        📱 iOS Development
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        🤖 Android Development
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        🐍 Python Basics
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        🎨 UI Design Tips
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        📱 React Native Help
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        🌐 Web Development
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        📊 Data Analysis
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        🤖 Machine Learning
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        🔒 Cybersecurity
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        📱 iOS Development
+                    </a>
+                    <a href="#" class="theme-transition block py-2 px-3 rounded text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700">
+                        🤖 Android Development
+                    </a>
+            </nav>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col mb-0 ml-0 transition-all duration-300">
+         
+            <!-- Chat Header -->
+            <header class="theme-transition p-4  flex justify-between items-center">
+                <!-- Header content -->
+                <div class="flex items-center space-x-2 baseline">
+                    <button id="menuToggle" class="theme-transition">
+                        <i class="fa-solid fa-bars text-2xl dark:text-gray-100"></i>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Incuti Ai</h2>
+                </div>
+
+                    <div class="flex space-x-2">
+                                        <div class="relative inline-block text-left">
+                                            <button id="userDropdown" class="p-2 rounded-lg bg-gray-300 dark:bg-gray-700 hover:scale-110 transition-transform">
+                                                <i class="fas fa-user text-gray-700 dark:text-gray-100"></i>
+                                            </button>
+                                            <div id="userDropdownMenu" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
+                                                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="userDropdown">
+                                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem">Logout</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                    
+                    <button id="themeToggle" class="p-2 rounded-lg bg-gray-300 dark:bg-gray-700 hover:scale-110 transition-transform">
+                        <svg id="moonIcon" class="w-6 h-6 hidden dark:block text-gray-100" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                        <svg id="sunIcon" class="w-6 h-6 block dark:hidden text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div>
+              
+            </header>
+
+            <!-- Message Container -->
+            <div class="message-container flex-1 p-4 space-y-4">
+                <!-- Message content -->
+                   <!-- User Message -->
+                <div class="flex items-start justify-end">
+                    <div class="bg-blue-400 text-white p-3 rounded-lg w-[55%]">
+                        <p>Hello, can you help me with some Python basics?</p>
+                    </div>
+                </div>
+
+                <!-- AI Message -->
+                <div class="flex items-start w-[80%]">
+                    <div class="bg-gray-200 dark:bg-gray-600 p-3 rounded-lg max-w-3/4">
+                        <p class="text-gray-900 dark:text-white">Certainly! I'd be happy to help you with Python basics. What specific topic would you like to start with? Here are some common starting points:</p>
+                        <ul class="list-disc list-inside mt-2 text-gray-900 dark:text-white">
+                            <li>Variables and data types</li>
+                            <li>Control structures (if statements, loops)</li>
+                            <li>Functions</li>
+                            <li>Lists and dictionaries</li>
+                            <li>Basic input/output</li>
+                        </ul>
+                        <p class="mt-2 text-gray-900 dark:text-white">Let me know which area you'd like to explore first!</p>
+                    </div>
+                </div>
+
+                <!-- User Message -->
+                <div class="flex items-start justify-end ">
+                    <div class="bg-blue-400 text-white p-3 rounded-lg  w-[55%]">
+                        <p>Can you show me an example of a simple Python function?</p>
+                    </div>
+                </div>
+
+                <!-- AI Message with Code Block -->
+                <div class="flex items-start w-[80%]">
+                    <div class="bg-gray-200 dark:bg-gray-700 p-3 rounded-lg max-w-3/4">
+                        <p class="text-gray-900 dark:text-white">Certainly! Here's an example of a simple Python function that greets a person:</p>
+                        <div class="code-block text-gray-100">
+                                    <pre><code>def greet(name):
+                            return f"Hello, {name}! Welcome to Python."
+
+                        # Using the function
+                        result = greet("Alice")
+                        print(result)
+                        # Output: Hello, Alice! Welcome to Python.</code></pre>
+                        </div>
+                        <p class="mt-2 text-gray-900 dark:text-white">This function takes a name as an input and returns a greeting message. You can call this function with different names to get personalized greetings.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="theme-transition fixed bottom-0 left-0 right-0 border-t border-gray-200 dark:border-gray-700 transition-all duration-300" id="inputContainer">
+                <!-- Input container content -->
+                <div class="max-w-screen-xl mx-auto px-4 md:px-20 py-4">
+                    <div class="flex items-center space-x-2">
+                        <input type="text"
+                               placeholder="Type your message here..."
+                               class="theme-transition flex-1 py-3 px-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                        <button class="theme-transition bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-lg transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+         const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const mainContent = document.querySelector('main');
+        const inputContainer = document.getElementById('inputContainer');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function setTheme(isDark) {
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            } else {
+                htmlElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            }
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            setTheme(true);
+        } else {
+            setTheme(false);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            setTheme(!htmlElement.classList.contains('dark'));
+        });
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.theme) {
+                setTheme(e.matches);
+            }
+        });
+
+         function toggleSidebar() {
+            sidebar.classList.toggle('hidden');
+            sidebarOverlay.classList.toggle('active');
+            mainContent.classList.toggle('ml-0');
+            mainContent.classList.toggle('ml-64');
+            adjustInputContainer();
+        }
+
+        function adjustInputContainer() {
+            if (window.innerWidth <= 1024) {
+                inputContainer.style.left = '0';
+            } else {
+                inputContainer.style.left = sidebar.classList.contains('hidden') ? '0' : '16rem';
+            }
+        }
+
+        menuToggle.addEventListener('click', () => {
+            toggleSidebar();
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 1024) {
+                sidebar.classList.add('hidden');
+                mainContent.classList.add('ml-0');
+                mainContent.classList.remove('ml-64');
+            } else {
+                sidebar.classList.remove('hidden');
+                mainContent.classList.remove('ml-0');
+                mainContent.classList.add('ml-64');
+            }
+            adjustInputContainer();
+        });
+
+        // Initial setup
+        if (window.innerWidth <= 1024) {
+            sidebar.classList.add('hidden');
+            mainContent.classList.add('ml-0');
+            mainContent.classList.remove('ml-64');
+        } else {
+            sidebar.classList.remove('hidden');
+            mainContent.classList.remove('ml-0');
+            mainContent.classList.add('ml-64');
+        }
+        adjustInputContainer();
+
+        // Close sidebar when clicking outside on small screens
+        sidebarOverlay.addEventListener('click', () => {
+            if (window.innerWidth <= 1024) {
+                sidebar.classList.add('hidden');
+                sidebarOverlay.classList.remove('active');
+                mainContent.classList.add('ml-0');
+                mainContent.classList.remove('ml-64');
+                adjustInputContainer();
+            }
+        });
+
+        // User dropdown functionality
+        const userDropdown = document.getElementById('userDropdown');
+        const userDropdownMenu = document.getElementById('userDropdownMenu');
+
+        userDropdown.addEventListener('click', () => {
+            userDropdownMenu.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!userDropdown.contains(event.target)) {
+                userDropdownMenu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
